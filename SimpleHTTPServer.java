@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
 
 public class SimpleHTTPServer {
     public static void main(String[] args) throws Exception {
@@ -12,8 +13,8 @@ public class SimpleHTTPServer {
         // Infinite loop because we don't want the server to open and close.
         while (true) {
             // Create a Socket object which represents the connection and is used to read incoming HTTP request and send HTTP response.
-            final Socket clientSocket = server.accept();
-            
+            try(Socket clientSocket = server.accept()) {
+                            
             // Read the incoming HTTP request
             InputStreamReader isr = new InputStreamReader(clientSocket.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
@@ -26,6 +27,10 @@ public class SimpleHTTPServer {
                 line = reader.readLine();
             }
 
+            Date today = new Date(0);
+            String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
+            clientSocket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+            }
         }
     }
 }
